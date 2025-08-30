@@ -58,7 +58,6 @@
                     </div>
                     <!-- Centered Navigation -->
                     <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2 bg-white bg-opacity-90 px-3 py-1 rounded-lg shadow-sm">
-                        <span class="text-xs font-medium text-gray-600">📊 NAVIGATION:</span>
                         <button id="page1Btn" class="px-2 py-0.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
                             Work Data
                         </button>
@@ -738,7 +737,12 @@
             }
         });
 
-        // Auto-refresh function to fetch live data every 30 seconds
+        // Initialize dashboard
+        async function initDashboard() {
+            await Promise.all([fetchWorkData(), fetchHoursData()]);
+        }
+
+        // Auto-refresh functionality
         function startAutoRefresh() {
             setInterval(async () => {
                 console.log('Auto-refreshing data...');
@@ -746,15 +750,10 @@
             }, 30000); // Refresh every 30 seconds
         }
 
-        // Initialize dashboard
-        async function initDashboard() {
-            await Promise.all([fetchWorkData(), fetchHoursData()]);
-            // Start auto-refresh after initial load
-            startAutoRefresh();
-        }
-
         // Start the dashboard
-        initDashboard();
+        initDashboard().then(() => {
+            startAutoRefresh();
+        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97726d5cf4c22982',t:'MTc1NjUzNzM5NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'977312c231d17ef5',t:'MTc1NjU0NDE2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
