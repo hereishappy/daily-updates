@@ -291,7 +291,7 @@
         let hoursData = [];
         let currentPage = 1;
 
-        // CSV URLs
+        // CSV URLs - Updated to ensure live data fetching
         const WORK_DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxODcmDFDJLfScffQaei0ejYlolvQKi32KiWBBAp97WO7lLuD1TZHgK-ibCMn5kmW_0CsQHZMzcrHp/pub?gid=1765901480&single=true&output=csv';
         const HOURS_DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxODcmDFDJLfScffQaei0ejYlolvQKi32KiWBBAp97WO7lLuD1TZHgK-ibCMn5kmW_0CsQHZMzcrHp/pub?gid=1727336003&single=true&output=csv';
 
@@ -353,7 +353,9 @@
         // Fetch data functions
         async function fetchWorkData() {
             try {
-                const response = await fetch(WORK_DATA_URL);
+                // Add cache-busting parameter to ensure live data
+                const cacheBuster = '&_=' + Date.now();
+                const response = await fetch(WORK_DATA_URL + cacheBuster);
                 const csvText = await response.text();
                 workData = parseCSV(csvText);
                 
@@ -373,7 +375,9 @@
 
         async function fetchHoursData() {
             try {
-                const response = await fetch(HOURS_DATA_URL);
+                // Add cache-busting parameter to ensure live data
+                const cacheBuster = '&_=' + Date.now();
+                const response = await fetch(HOURS_DATA_URL + cacheBuster);
                 const csvText = await response.text();
                 hoursData = parseCSV(csvText);
                 
@@ -734,13 +738,23 @@
             }
         });
 
+        // Auto-refresh function to fetch live data every 30 seconds
+        function startAutoRefresh() {
+            setInterval(async () => {
+                console.log('Auto-refreshing data...');
+                await Promise.all([fetchWorkData(), fetchHoursData()]);
+            }, 30000); // Refresh every 30 seconds
+        }
+
         // Initialize dashboard
         async function initDashboard() {
             await Promise.all([fetchWorkData(), fetchHoursData()]);
+            // Start auto-refresh after initial load
+            startAutoRefresh();
         }
 
         // Start the dashboard
         initDashboard();
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'977258f495ec9bc1',t:'MTc1NjUzNjU1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97726d5cf4c22982',t:'MTc1NjUzNzM5NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
