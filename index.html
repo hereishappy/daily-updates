@@ -42,7 +42,7 @@
     <!-- Navigation -->
     <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-10">
+            <div class="flex justify-between items-center h-8">
                 <!-- Top Performer Display - Left -->
                 <div class="flex items-center">
                     <div class="text-xs font-semibold text-gray-800">
@@ -51,17 +51,17 @@
                 </div>
                 
                 <!-- Centered Navigation -->
-                <div class="flex items-center space-x-1 bg-white bg-opacity-90 px-2 py-0.5 rounded shadow-sm">
-                    <button id="page1Btn" class="px-2 py-0.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                <div class="flex items-center space-x-1 bg-white bg-opacity-90 px-1 py-0.5 rounded shadow-sm">
+                    <button id="page1Btn" class="px-1.5 py-0.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
                         Work Data
                     </button>
-                    <button id="page2Btn" class="px-2 py-0.5 text-xs font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 transition-colors">
+                    <button id="page2Btn" class="px-1.5 py-0.5 text-xs font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 transition-colors">
                         Employee Hours
                     </button>
                 </div>
                 
                 <!-- Weather and Location Display - Right -->
-                <div class="flex items-center space-x-2 text-xs">
+                <div class="flex items-center space-x-1.5 text-xs">
                     <div class="text-gray-700">
                         📍 <span class="font-medium">Bhadrachalam, TG</span>
                     </div>
@@ -103,14 +103,26 @@
         </div>
 
         <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-            <div class="bg-white bg-opacity-80 rounded-lg shadow-sm p-3 border border-gray-200">
-                <h3 class="text-sm font-semibold text-gray-900 mb-1">Total Erection</h3>
-                <div class="text-xl font-bold text-green-600" id="totalErection">0</div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-3">
+            <div class="bg-white bg-opacity-80 rounded-lg shadow-sm p-2 border border-gray-200">
+                <h3 class="text-xs font-semibold text-gray-900 mb-1">Total Erection</h3>
+                <div class="text-lg font-bold text-green-600" id="totalErection">0</div>
             </div>
-            <div class="bg-white bg-opacity-80 rounded-lg shadow-sm p-3 border border-gray-200">
-                <h3 class="text-sm font-semibold text-gray-900 mb-1">Total Dismantling</h3>
-                <div class="text-xl font-bold text-red-600" id="totalDismantling">0</div>
+            <div class="bg-white bg-opacity-80 rounded-lg shadow-sm p-2 border border-gray-200">
+                <h3 class="text-xs font-semibold text-gray-900 mb-1">Total Dismantling</h3>
+                <div class="text-lg font-bold text-red-600" id="totalDismantling">0</div>
+            </div>
+            <div class="bg-white bg-opacity-80 rounded-lg shadow-sm p-2 border border-gray-200">
+                <h3 class="text-xs font-semibold text-gray-900 mb-1">Total Man Hours</h3>
+                <div class="text-lg font-bold text-blue-600" id="totalManHours">0</div>
+            </div>
+            <div class="bg-white bg-opacity-80 rounded-lg shadow-sm p-2 border border-gray-200">
+                <h3 class="text-xs font-semibold text-gray-900 mb-1">Total OT</h3>
+                <div class="text-lg font-bold text-orange-600" id="totalOT">0</div>
+            </div>
+            <div class="bg-white bg-opacity-80 rounded-lg shadow-sm p-2 border border-gray-200">
+                <h3 class="text-xs font-semibold text-gray-900 mb-1">Productivity</h3>
+                <div class="text-lg font-bold text-purple-600" id="totalProductivity">0</div>
             </div>
         </div>
 
@@ -442,14 +454,22 @@
         // Render functions
         function renderWorkData() {
             const filteredData = getFilteredWorkData();
+            const filteredHoursData = getFilteredHoursData();
             
             // Calculate totals for filtered data
             const totalErection = filteredData.reduce((sum, row) => sum + (parseFloat(row.Erection) || 0), 0);
             const totalDismantling = filteredData.reduce((sum, row) => sum + (parseFloat(row.Dismantling) || 0), 0);
+            const totalShiftHours = filteredHoursData.reduce((sum, row) => sum + (parseFloat(row['Shift Hours']) || 0), 0);
+            const totalOTHours = filteredHoursData.reduce((sum, row) => sum + (parseFloat(row['OT HOURS']) || 0), 0);
+            const totalManHours = totalShiftHours + totalOTHours;
+            const productivity = totalManHours > 0 ? (totalErection + (totalDismantling / 2)) / totalManHours : 0;
             
             // Update summary cards
             document.getElementById('totalErection').textContent = totalErection.toFixed(2);
             document.getElementById('totalDismantling').textContent = totalDismantling.toFixed(2);
+            document.getElementById('totalManHours').textContent = totalManHours.toFixed(2);
+            document.getElementById('totalOT').textContent = totalOTHours.toFixed(2);
+            document.getElementById('totalProductivity').textContent = productivity.toFixed(2);
         }
 
         function renderHoursData() {
@@ -795,5 +815,5 @@
             startWeatherUpdates();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9773529bc54cc1a6',t:'MTc1NjU0Njc4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9773590eb209c784',t:'MTc1NjU0NzA0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
