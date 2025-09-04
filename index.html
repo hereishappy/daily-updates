@@ -36,6 +36,41 @@
         .animate-marquee-fast {
             animation: marquee 20s linear infinite;
         }
+        .top-performer-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .top-performer-shine::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shine 3s infinite;
+            z-index: 1;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        }
+        .top-performer-glow {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 165, 0, 0.4), 0 0 60px rgba(255, 140, 0, 0.2);
+            animation: glow-pulse 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow-pulse {
+            from { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 165, 0, 0.4), 0 0 60px rgba(255, 140, 0, 0.2); }
+            to { box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 165, 0, 0.6), 0 0 90px rgba(255, 140, 0, 0.4); }
+        }
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1.05); }
+            50% { transform: translateY(-5px) scale(1.08); }
+        }
     </style>
 </head>
 <body class="bg-gray-50 overflow-hidden" style="width: 100vw; height: 100vh; aspect-ratio: 9/16;">
@@ -43,14 +78,7 @@
     <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-10">
-                <!-- Top Performer Display - Left -->
-                <div class="flex items-center">
-                    <div class="text-xs font-semibold text-gray-800">
-                        ⭐ <span id="topPerformerName" class="text-blue-600 font-bold">Loading...</span> ⭐
-                    </div>
-                </div>
-                
-                <!-- Centered Navigation -->
+                <!-- Navigation - Left -->
                 <div class="flex items-center space-x-1 bg-white bg-opacity-90 px-1 py-0.5 rounded shadow-sm">
                     <button id="page1Btn" class="px-1.5 py-0.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
                         Work Data
@@ -60,16 +88,20 @@
                     </button>
                 </div>
                 
+                <!-- Empty space for alignment -->
+                <div class="flex items-center">
+                </div>
+                
                 <!-- Weather and Location Display - Right -->
-                <div class="flex items-center space-x-1.5 text-xs">
-                    <div class="text-gray-700">
-                        📍 <span class="font-medium">Bhadrachalam, TG</span>
+                <div class="flex items-center space-x-0.5">
+                    <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-full px-1.5 py-0.5 shadow-sm" style="font-size: 0.7rem;">
+                        📍 <span class="font-normal text-gray-700">Bhadrachalam, TG</span>
                     </div>
-                    <div id="weatherDisplay" class="text-gray-700">
-                        🌤️ <span id="temperature">--°C</span> | <span id="weatherCondition">Loading...</span>
+                    <div id="weatherDisplay" class="bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 rounded-full px-1.5 py-0.5 shadow-sm" style="font-size: 0.7rem;">
+                        🌤️ <span id="temperature" class="text-gray-700">--°C</span> | <span id="weatherCondition" class="text-gray-700">Loading...</span>
                     </div>
-                    <div id="timeDisplay" class="text-gray-700 font-medium">
-                        🕐 <span id="currentTime">--:--</span>
+                    <div id="timeDisplay" class="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-full px-1.5 py-0.5 shadow-sm" style="font-size: 0.7rem;">
+                        🕐 <span id="currentTime" class="text-gray-700 font-normal">--:--</span>
                     </div>
                 </div>
             </div>
@@ -437,6 +469,20 @@
             });
         }
 
+        function getFilteredHoursDataForWorkPage() {
+            const selectedDate = document.getElementById('dateFrom1').value;
+            const supervisor = document.getElementById('supervisorFilter1').value;
+            
+            return hoursData.filter(row => {
+                let include = true;
+                
+                if (selectedDate && new Date(row.Date).toDateString() !== new Date(selectedDate).toDateString()) include = false;
+                if (supervisor && row.Supervisor !== supervisor) include = false;
+                
+                return include;
+            });
+        }
+
         function getFilteredHoursData() {
             const selectedDate = document.getElementById('dateFrom2').value;
             const supervisor = document.getElementById('supervisorFilter2').value;
@@ -454,7 +500,7 @@
         // Render functions
         function renderWorkData() {
             const filteredData = getFilteredWorkData();
-            const filteredHoursData = getFilteredHoursData();
+            const filteredHoursData = getFilteredHoursDataForWorkPage();
             
             // Calculate totals for filtered data
             const totalErection = filteredData.reduce((sum, row) => sum + (parseFloat(row.Erection) || 0), 0);
@@ -529,7 +575,6 @@
             });
             
             renderProductivityCards(productivityData);
-            updateTopPerformerTicker(productivityData);
         }
 
         function renderProductivityCards(data) {
@@ -540,46 +585,57 @@
                 return;
             }
             
-            container.innerHTML = data.map(item => `
-                <div class="bg-white bg-opacity-80 rounded shadow-sm p-2 border border-gray-200 fade-in cursor-pointer hover:shadow-md hover:bg-blue-50 transition-all duration-200" onclick="openSupervisorModal('${item.supervisor}')">
-                    <h3 class="text-xs font-semibold text-gray-900 mb-1">${item.supervisor}</h3>
-                    <div class="space-y-1">
-                        <div class="flex justify-between">
-                            <span class="text-xs text-gray-600">Erection:</span>
-                            <span class="text-xs font-medium text-gray-900">${item.totalErection.toFixed(2)}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-xs text-gray-600">Dismantling:</span>
-                            <span class="text-xs font-medium text-gray-900">${item.totalDismantling.toFixed(2)}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-xs text-gray-600">Man Hours:</span>
-                            <span class="text-xs font-medium text-gray-900">${item.totalManHours.toFixed(2)}</span>
-                        </div>
-                        <div class="pt-1 border-t border-gray-200">
-                            <div class="flex justify-between">
-                                <span class="text-xs font-medium text-gray-900">Productivity:</span>
-                                <span class="text-sm font-bold text-blue-600">${item.productivity}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-2 text-center">
-                        <span class="text-xs text-blue-600 font-medium">Click to view details</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateTopPerformerTicker(data) {
-            if (data.length === 0) return;
-            
-            // Find the supervisor with highest productivity
+            // Find the top performer
             const topPerformer = data.reduce((max, current) => 
                 parseFloat(current.productivity) > parseFloat(max.productivity) ? current : max
             );
             
-            document.getElementById('topPerformerName').textContent = topPerformer.supervisor;
+            container.innerHTML = data.map(item => {
+                const isTopPerformer = item.supervisor === topPerformer.supervisor;
+                const cardClass = isTopPerformer 
+                    ? "bg-gradient-to-br from-yellow-200 via-orange-100 to-red-100 border-4 border-yellow-500 top-performer-shine top-performer-glow floating-animation" 
+                    : "bg-white bg-opacity-80 border border-gray-200 shadow-sm";
+                const titleClass = isTopPerformer ? "text-orange-900 font-extrabold text-shadow relative z-10" : "text-gray-900 font-semibold";
+                const productivityClass = isTopPerformer ? "text-orange-700 font-black text-lg relative z-10" : "text-blue-600 font-bold";
+                const crownIcon = isTopPerformer ? "👑 " : "";
+                const trophyIcon = isTopPerformer ? "🏆" : "";
+                const fireIcon = isTopPerformer ? "🔥" : "";
+                
+                return `
+                    <div class="${cardClass} rounded-lg p-2 fade-in cursor-pointer hover:shadow-md hover:bg-blue-50 transition-all duration-200 relative" onclick="openSupervisorModal('${item.supervisor}')">
+                        ${isTopPerformer ? '<div class="absolute -top-2 -right-2 text-yellow-400 text-2xl animate-bounce">⭐</div>' : ''}
+                        ${isTopPerformer ? '<div class="absolute -top-1 -left-1 text-yellow-500 text-lg animate-pulse">🎯</div>' : ''}
+                        ${isTopPerformer ? '<div class="absolute top-0 right-4 text-red-500 text-sm animate-pulse">🔥</div>' : ''}
+                        <h3 class="text-xs ${titleClass} mb-1 relative z-10">${crownIcon}${item.supervisor} ${trophyIcon}</h3>
+                        <div class="space-y-1 relative z-10">
+                            <div class="flex justify-between">
+                                <span class="text-xs ${isTopPerformer ? 'text-orange-700 font-medium' : 'text-gray-600'}">Erection:</span>
+                                <span class="text-xs font-medium ${isTopPerformer ? 'text-orange-900' : 'text-gray-900'}">${item.totalErection.toFixed(2)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-xs ${isTopPerformer ? 'text-orange-700 font-medium' : 'text-gray-600'}">Dismantling:</span>
+                                <span class="text-xs font-medium ${isTopPerformer ? 'text-orange-900' : 'text-gray-900'}">${item.totalDismantling.toFixed(2)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-xs ${isTopPerformer ? 'text-orange-700 font-medium' : 'text-gray-600'}">Man Hours:</span>
+                                <span class="text-xs font-medium ${isTopPerformer ? 'text-orange-900' : 'text-gray-900'}">${item.totalManHours.toFixed(2)}</span>
+                            </div>
+                            <div class="pt-1 border-t ${isTopPerformer ? 'border-orange-300' : 'border-gray-200'}">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-medium ${isTopPerformer ? 'text-orange-900' : 'text-gray-900'}">Productivity:</span>
+                                    <span class="text-sm ${productivityClass}">${fireIcon}${item.productivity}${isTopPerformer ? '🚀' : ''}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-center relative z-10">
+                            <span class="text-xs ${isTopPerformer ? 'text-orange-700 font-bold' : 'text-blue-600'} font-medium">Click to view details</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
+
+
 
         // Weather and Time Functions
         async function fetchWeather() {
@@ -815,5 +871,5 @@
             startWeatherUpdates();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9773654ae095c728',t:'MTc1NjU0NzU1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979b0ed8309c2dfe',t:'MTc1Njk2MzQ0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
