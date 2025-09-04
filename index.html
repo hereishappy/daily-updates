@@ -75,15 +75,15 @@
 </head>
 <body class="bg-gray-50 overflow-hidden" style="width: 100vw; height: 100vh; aspect-ratio: 9/16;">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-10">
+    <nav class="bg-gradient-to-r from-slate-800 to-slate-700 shadow-lg">
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+            <div class="flex justify-between items-center h-12">
                 <!-- Navigation - Left -->
-                <div class="flex items-center space-x-1 bg-white bg-opacity-90 px-1 py-0.5 rounded shadow-sm">
-                    <button id="page1Btn" class="px-1.5 py-0.5 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
+                <div class="flex items-center space-x-1 bg-white bg-opacity-10 backdrop-blur-sm px-2 py-1 rounded-lg">
+                    <button id="page1Btn" class="px-2 py-1 text-xs font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors">
                         Work Data
                     </button>
-                    <button id="page2Btn" class="px-1.5 py-0.5 text-xs font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 transition-colors">
+                    <button id="page2Btn" class="px-2 py-1 text-xs font-medium text-gray-200 bg-transparent rounded hover:bg-white hover:bg-opacity-20 transition-colors">
                         Employee Hours
                     </button>
                 </div>
@@ -93,15 +93,15 @@
                 </div>
                 
                 <!-- Weather and Location Display - Right -->
-                <div class="flex items-center space-x-0.5">
-                    <div class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-full px-1.5 py-0.5 shadow-sm" style="font-size: 0.7rem;">
-                        📍 <span class="font-normal text-gray-700">Bhadrachalam, TG</span>
+                <div class="flex items-center space-x-1 sm:space-x-2">
+                    <div class="bg-transparent px-1.5 py-0.5 rounded" style="font-size: 0.65rem;">
+                        📍 <span class="font-normal text-gray-200">Bhadrachalam, TG</span>
                     </div>
-                    <div id="weatherDisplay" class="bg-gradient-to-r from-sky-50 to-cyan-50 border border-sky-200 rounded-full px-1.5 py-0.5 shadow-sm" style="font-size: 0.7rem;">
-                        🌤️ <span id="temperature" class="text-gray-700">--°C</span> | <span id="weatherCondition" class="text-gray-700">Loading...</span>
+                    <div id="weatherDisplay" class="bg-transparent px-1.5 py-0.5 rounded" style="font-size: 0.65rem;">
+                        🌤️ <span id="temperature" class="text-gray-200">--°C</span> | <span id="weatherCondition" class="text-gray-200">Loading...</span>
                     </div>
-                    <div id="timeDisplay" class="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-full px-1.5 py-0.5 shadow-sm" style="font-size: 0.7rem;">
-                        🕐 <span id="currentTime" class="text-gray-700 font-normal">--:--</span>
+                    <div id="timeDisplay" class="bg-transparent px-1.5 py-0.5 rounded" style="font-size: 0.65rem;">
+                        🕐 <span id="currentTime" class="text-gray-200 font-normal">--:--</span>
                     </div>
                 </div>
             </div>
@@ -350,14 +350,14 @@
                 document.getElementById('page1Btn').classList.add('bg-blue-600', 'text-white');
                 document.getElementById('page1Btn').classList.remove('bg-gray-100', 'text-gray-700');
                 document.getElementById('page2Btn').classList.remove('bg-blue-600', 'text-white');
-                document.getElementById('page2Btn').classList.add('bg-gray-100', 'text-gray-700');
+                document.getElementById('page2Btn').classList.add('bg-transparent', 'text-gray-200');
             } else if (pageNum === 2) {
                 document.getElementById('page1').classList.add('hidden');
                 document.getElementById('page2').classList.remove('hidden');
                 document.getElementById('page2Btn').classList.add('bg-blue-600', 'text-white');
-                document.getElementById('page2Btn').classList.remove('bg-gray-100', 'text-gray-700');
+                document.getElementById('page2Btn').classList.remove('bg-transparent', 'text-gray-200');
                 document.getElementById('page1Btn').classList.remove('bg-blue-600', 'text-white');
-                document.getElementById('page1Btn').classList.add('bg-gray-100', 'text-gray-700');
+                document.getElementById('page1Btn').classList.add('bg-transparent', 'text-gray-200');
             }
         }
 
@@ -871,5 +871,5 @@
             startWeatherUpdates();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979b0ed8309c2dfe',t:'MTc1Njk2MzQ0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979b1e5641072dfe',t:'MTc1Njk2NDA3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
